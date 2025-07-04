@@ -4,31 +4,29 @@ import { AuthRequest } from '@/lib/api/clientApi';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import css from './SignUp.module.css';
+import css from './SignIn.module.css';
 
-export const dynamic = 'force-static';
-
-export default function SignUp() {
-  const router = useRouter();
+export default function SignIn() {
   const [error, setError] = useState('');
+  const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
 
   const handleSubmit = async (formData: FormData) => {
     try {
       const formValues = Object.fromEntries(formData) as AuthRequest;
-
+      
       const mockUser = { id: '1', email: formValues.email, username: 'test' };
       setUser(mockUser);
       router.replace('/profile');
     } catch (error) {
       console.log('error', error);
-      setError('Oops... some error');
+      setError('Invalid email or password');
     }
   };
 
   return (
     <main className={css.mainContent}>
-      <h1 className={css.formTitle}>Sign up</h1>
+      <h1 className={css.formTitle}>Sign in</h1>
       <form action={handleSubmit} className={css.form}>
         <div className={css.formGroup}>
           <label htmlFor="email">Email</label>
@@ -40,11 +38,11 @@ export default function SignUp() {
         </div>
         <div className={css.actions}>
           <button type="submit" className={css.submitButton}>
-            Register
+            Log in
           </button>
         </div>
+        {error && <p className={css.error}>{error}</p>}
       </form>
-      {error && <p>{error}</p>}
     </main>
   );
 }
